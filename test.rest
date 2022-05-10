@@ -1,8 +1,8 @@
-GET  http://localhost:3000
+GET  http://localhost:4000
 
 ###
 
-POST http://localhost:3000/adduser
+POST http://localhost:4000/adduser
 Content-Type: application/json
 
 {
@@ -12,10 +12,23 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/login
+POST http://localhost:4000/login
 Content-Type: application/json
 
 {
-    "name": "gamer",
-    "password": "remag"
+    "name": "kalle",
+    "password": "anka"
 }
+
+###
+POST http://localhost:4000/blogs
+Content-Type: application/json
+
+{
+    "title": "my trip to armenia - kalle",
+    "text": "lorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum",
+    "author": "FSuHwYDwVwmNoYNg2C6y3"
+}
+
+###
+GET http://localhost:4000/blogs/ZbqmjsOzte56I5PQc6BBf
