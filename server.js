@@ -49,7 +49,7 @@ app.post("/adduser", (req, res) => {
     res.send("ny användare skapad")
 })
 
-//logga in på sidan
+//logga in på sidan //
 app.post("/login", (req, res) => {
 
     fs.readFile("users.json", (err, data) => {
