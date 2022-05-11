@@ -107,6 +107,33 @@ app.post("/blogs", (req, res) => {
 
 })
 
+//radera en blogpost
+app.delete("/blogs/:blogID", (req, res) => {
+
+    fs.readFile("blogs.json", (err, data) => {
+        if (err) {
+            console.log("något gick fel när bloggar skulle läsas in " + err);
+        }
+
+        let allBlogs = JSON.parse(data);
+
+        for (let i = 0; i < allBlogs.length; i++) {
+            const blog = allBlogs[i];
+
+            if (blog.id == req.params.blogID) {
+                allBlogs.splice(i, 1);
+                fs.writeFile("blogs.json", JSON.stringify(allBlogs, null, 2), (err) => {
+                    if (err) {
+                        console.log("något gick fel när ny blogg skulle skapas " + err);
+                    }
+                })
+
+            }
+        }
+    })
+
+})
+
 //hämta en användares alla blogpost
 app.get("/blogs/:userID", (req, res) => {
 
