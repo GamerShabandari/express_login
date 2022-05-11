@@ -159,7 +159,7 @@ app.get("/blogs/:userID", (req, res) => {
 
         }
 
-        res.send(yourBlogs)
+        res.send(yourBlogs.reverse())
 
     })
 })
