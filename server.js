@@ -2,10 +2,12 @@ import express from "express";
 import fs from "fs";
 import { nanoid } from "nanoid";
 import cors from "cors";
+import morgan from "morgan";
 
 const port = 4000;
 const app = express()
 
+app.use(morgan("dev"))
 app.use(express.json())
 app.use(cors())
 
