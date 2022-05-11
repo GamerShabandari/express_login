@@ -104,6 +104,7 @@ app.post("/blogs", (req, res) => {
             if (err) {
                 console.log("något gick fel när ny blogg skulle skapas " + err);
             }
+            res.send("ok from server")
         })
     })
 
@@ -128,6 +129,7 @@ app.delete("/blogs/:blogID", (req, res) => {
                     if (err) {
                         console.log("något gick fel när ny blogg skulle skapas " + err);
                     }
+                    res.send("ok from server")
                 })
 
             }
