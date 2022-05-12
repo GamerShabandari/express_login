@@ -3,6 +3,7 @@ import fs from "fs";
 import { nanoid } from "nanoid";
 import cors from "cors";
 import morgan from "morgan";
+import cryptoJs from "crypto-js";
 
 const port = 4000;
 const app = express()
@@ -12,8 +13,12 @@ app.use(express.json())
 app.use(cors())
 
 
+const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
+
+
 ////////////////////////////////////////////////////////////////////
 
+// hämta namn och id på alla användare
 app.get("/allusers", (req, res) => {
 
     fs.readFile("users.json", (err, data) => {
@@ -22,15 +27,17 @@ app.get("/allusers", (req, res) => {
         }
 
         let users = JSON.parse(data);
-        let allUsersInfo = users.map((user)=>{
-           let u =  { id: user.id, name: user.name}
-           return u;
+        let allUsersInfo = users.map((user) => {
+            let u = { id: user.id, name: user.name }
+            return u;
         })
         res.send(allUsersInfo)
 
     })
     //res.json(users)
 })
+
+////////////////////////////////////////////////////////////////////
 
 // lägg till ny användare
 app.post("/adduser", (req, res) => {
@@ -43,6 +50,9 @@ app.post("/adduser", (req, res) => {
         let users = JSON.parse(data);
 
         let newUser = { id: nanoid(), ...req.body };
+       
+        let cryptPass = cryptoJs.AES.encrypt(req.body.password, saltKey).toString();
+        newUser.password = cryptPass;
 
         users.push(newUser);
 
@@ -54,6 +64,8 @@ app.post("/adduser", (req, res) => {
     })
     res.send("ny användare skapad")
 })
+
+////////////////////////////////////////////////////////////////////
 
 //logga in på sidan //
 app.post("/login", (req, res) => {
@@ -70,7 +82,8 @@ app.post("/login", (req, res) => {
 
         for (let i = 0; i < users.length; i++) {
             const user = users[i];
-            if (user.name == req.body.name && user.password == req.body.password) {
+            let deCryptPassToCheck = cryptoJs.AES.decrypt(user.password, saltKey).toString(cryptoJs.enc.Utf8);
+            if (user.name == req.body.name && deCryptPassToCheck == req.body.password) {
 
                 console.log("logged in" + user.name);
                 status = { loggedIn: true, userID: user.id }
@@ -79,6 +92,8 @@ app.post("/login", (req, res) => {
         res.send(status)
     })
 })
+
+////////////////////////////////////////////////////////////////////
 
 //skapa ny blogpost
 app.post("/blogs", (req, res) => {
@@ -103,6 +118,8 @@ app.post("/blogs", (req, res) => {
     })
 
 })
+
+////////////////////////////////////////////////////////////////////
 
 //radera en blogpost
 app.delete("/blogs/:blogID", (req, res) => {
@@ -132,10 +149,12 @@ app.delete("/blogs/:blogID", (req, res) => {
 
 })
 
-//uppdatera en redan skapad blogpost
-app.put("/blogs/update", (req, res)=>{
+////////////////////////////////////////////////////////////////////
 
-    let updatedBlogPost = {...req.body, created: new Date().toDateString()}
+//uppdatera en redan skapad blogpost
+app.put("/blogs/update", (req, res) => {
+
+    let updatedBlogPost = { ...req.body, created: new Date().toDateString() }
 
     fs.readFile("blogs.json", (err, data) => {
         if (err) {
@@ -150,7 +169,7 @@ app.put("/blogs/update", (req, res)=>{
             if (blog.id == updatedBlogPost.id) {
 
                 allBlogs[i] = updatedBlogPost;
-               
+
                 fs.writeFile("blogs.json", JSON.stringify(allBlogs, null, 2), (err) => {
                     if (err) {
                         console.log("något gick fel när ny blogg skulle skapas " + err);
@@ -163,6 +182,8 @@ app.put("/blogs/update", (req, res)=>{
     })
 
 })
+
+////////////////////////////////////////////////////////////////////
 
 //hämta en användares alla blogpost
 app.get("/blogs/:userID", (req, res) => {
@@ -190,6 +211,8 @@ app.get("/blogs/:userID", (req, res) => {
     })
 })
 
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
 app.listen(port, () => {

@@ -6,8 +6,8 @@ POST http://localhost:4000/adduser
 Content-Type: application/json
 
 {
-    "name": "kalle",
-    "password": "anka"
+    "name": "rickardo",
+    "password": "kaka"
 }
 
 ###
@@ -16,8 +16,8 @@ POST http://localhost:4000/login
 Content-Type: application/json
 
 {
-    "name": "kalle",
-    "password": "anka"
+    "name": "kakaka",
+    "password": "mamama"
 }
 
 ###
