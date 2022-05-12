@@ -138,6 +138,39 @@ app.delete("/blogs/:blogID", (req, res) => {
 
 })
 
+//uppdatera en redan skapad blogpost
+app.put("/blogs/update", (req, res)=>{
+
+    let updatedBlogPost = {...req.body, created: new Date().toDateString()}
+   // console.log(req.body);
+
+    fs.readFile("blogs.json", (err, data) => {
+        if (err) {
+            console.log("något gick fel när bloggar skulle läsas in " + err);
+        }
+
+        let allBlogs = JSON.parse(data);
+
+        for (let i = 0; i < allBlogs.length; i++) {
+            const blog = allBlogs[i];
+
+            if (blog.id == updatedBlogPost.id) {
+
+                allBlogs[i] = updatedBlogPost;
+               
+                fs.writeFile("blogs.json", JSON.stringify(allBlogs, null, 2), (err) => {
+                    if (err) {
+                        console.log("något gick fel när ny blogg skulle skapas " + err);
+                    }
+                    res.send("ok from server")
+                })
+
+            }
+        }
+    })
+
+})
+
 //hämta en användares alla blogpost
 app.get("/blogs/:userID", (req, res) => {
 
