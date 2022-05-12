@@ -14,7 +14,7 @@ app.use(cors())
 
 ////////////////////////////////////////////////////////////////////
 
-app.get("/", (req, res) => {
+app.get("/allusers", (req, res) => {
 
     fs.readFile("users.json", (err, data) => {
         if (err) {
@@ -22,7 +22,11 @@ app.get("/", (req, res) => {
         }
 
         let users = JSON.parse(data);
-        res.send(users)
+        let allUsersInfo = users.map((user)=>{
+           let u =  { id: user.id, name: user.name}
+           return u;
+        })
+        res.send(allUsersInfo)
 
     })
     //res.json(users)
@@ -72,16 +76,6 @@ app.post("/login", (req, res) => {
                 status = { loggedIn: true, userID: user.id }
             }
         }
-
-        // users.find((user) => {
-        //     if (user.name == req.body.name && user.password == req.body.password) {
-        //         console.log("logged in");
-        //         //res.json({"status":"loggedIn", "userID":user.id})
-        //     } else {
-        //         console.log("wrong pass");
-        //         //res.send("error bad login")
-        //     }
-        // })
         res.send(status)
     })
 })
@@ -142,7 +136,6 @@ app.delete("/blogs/:blogID", (req, res) => {
 app.put("/blogs/update", (req, res)=>{
 
     let updatedBlogPost = {...req.body, created: new Date().toDateString()}
-   // console.log(req.body);
 
     fs.readFile("blogs.json", (err, data) => {
         if (err) {
