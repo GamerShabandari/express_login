@@ -50,7 +50,7 @@ app.post("/adduser", (req, res) => {
         let users = JSON.parse(data);
 
         let newUser = { id: nanoid(), ...req.body };
-       
+
         let cryptPass = cryptoJs.AES.encrypt(req.body.password, saltKey).toString();
         newUser.password = cryptPass;
 
@@ -215,7 +215,15 @@ app.get("/blogs/:userID", (req, res) => {
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
-app.listen(3000, () => {
+// app.listen(3000, () => {
+//     // console.log("server är igång på port: " + port);
+//     console.log("server är igång på port: 3000");
+// })
+
+app.listen(process.env.PORT || 3000, () => {
+
     // console.log("server är igång på port: " + port);
+
     console.log("server är igång på port: 3000");
+
 })
