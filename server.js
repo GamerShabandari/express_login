@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import cryptoJs from "crypto-js";
 
-const port = 4000;
+const port = 3000;
 const app = express()
 
 app.use(morgan("dev"))
