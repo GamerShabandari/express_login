@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import cryptoJs from "crypto-js";
 
-const port = 3000;
+// const port = 3000;
 const app = express()
 
 app.use(morgan("dev"))
@@ -215,6 +215,7 @@ app.get("/blogs/:userID", (req, res) => {
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
-app.listen(port, () => {
-    console.log("server är igång på port: " + port);
+app.listen(3000, () => {
+    // console.log("server är igång på port: " + port);
+    console.log("server är igång på port: 3000");
 })
