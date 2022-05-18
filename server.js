@@ -9,13 +9,17 @@ import { MongoClient } from "mongodb";
 // const port = 3000;
 const app = express()
 
-MongoClient.connect("mongodb://127.0.0.1:27017", {
+// MongoClient.connect("mongodb://127.0.0.1:27017", {
+//     useUnifiedTopology: true
+// })
+MongoClient.connect("mongodb+srv://gamer:remag@gamerblogcluster.bwgq0.mongodb.net/?retryWrites=true&w=majority", {
     useUnifiedTopology: true
 })
     .then(client => {
         console.log("vi har kontakt med databasen");
 
-        const db = client.db("nosqldagbok");
+        // const db = client.db("nosqldagbok");
+        const db = client.db("blogosphere");
         app.locals.db = db;
     })
 
@@ -48,7 +52,7 @@ const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
 //     })
 // })
 
-
+////////////////////////////////////////////////////////////////////
 
 // hämta namn och id på alla användare
 app.get("/allusers", (req, res) => {
@@ -327,14 +331,7 @@ app.get("/blogs/:userID", (req, res) => {
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
-// app.listen(3000, () => {
-//     // console.log("server är igång på port: " + port);
-//     console.log("server är igång på port: 3000");
-// })
-
 app.listen(process.env.PORT || 4000, () => {
-
-    // console.log("server är igång på port: " + port);
 
     console.log("server är igång på port: 4000");
 
