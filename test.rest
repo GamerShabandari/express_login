@@ -1,4 +1,18 @@
-GET  http://localhost:3000/allusers
+GET  http://localhost:4000/
+
+###
+
+POST http://localhost:4000/addtest
+Content-Type: application/json
+
+{
+    "name": "kalle",
+    "password": "anka"
+}
+
+###
+
+GET  http://localhost:4000/allusers
 
 ###
 
@@ -6,18 +20,18 @@ POST http://localhost:4000/adduser
 Content-Type: application/json
 
 {
-    "name": "rickardo",
-    "password": "kaka"
+    "name": "arammasis",
+    "password": "shabandari"
 }
 
 ###
 
-POST http://localhost:3000/login
+POST http://localhost:4000/login
 Content-Type: application/json
 
 {
-    "name": "gamers",
-    "password": "remags"
+    "name": "arammasis",
+    "password": "shabandari"
 }
 
 ###
@@ -25,13 +39,12 @@ POST http://localhost:4000/blogs
 Content-Type: application/json
 
 {
-    "title": "hej nytt test",
-    "text": "hej test text",
-    "author": "Og_dp5EuS1kVH3EuXnFTj"
+    "title": "aram här",
+    "text": "aram testar",
+    "author": "b24_dlDk_6wyHC-9qHhXl"
 }
 
 ###
-GET http://localhost:4000/blogs/ZbqmjsOzte56I5PQc6BBf
-
+GET http://localhost:4000/blogs/b24_dlDk_6wyHC-9qHhXl
 ###
 DELETE http://localhost:4000/blogs/qFjNbBatTAsO7Rb2zPVRs
