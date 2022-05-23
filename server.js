@@ -54,6 +54,39 @@ const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
 
 ////////////////////////////////////////////////////////////////////
 
+
+// logga in admin monolit
+app.get("/admin", (req, res) => {
+
+    req.app.locals.db.collection("users").find().toArray()
+        .then(results => {
+    
+            let users = results;
+
+            let usersListHTML = "<div> <ul>";
+
+            for (const user of users) {
+
+                usersListHTML += "<li>" + user.name + ": "
+                if (user.subscribed) {
+                    usersListHTML += "subscribed</li>"
+                } else{
+                    usersListHTML += "not subscribed</li>"
+                }
+
+            }
+
+            usersListHTML += "</ul> </div>"
+
+            res.send(usersListHTML)
+        })
+
+
+})
+
+
+////////////////////////////////////////////////////////////////////
+
 // hämta namn och id på alla användare
 app.get("/allusers", (req, res) => {
 
@@ -92,7 +125,7 @@ app.get("/allusers", (req, res) => {
 // lägg till ny användare
 app.post("/adduser", (req, res) => {
 
-    let newUser = { id: nanoid(), ...req.body, subscribed: false };
+    let newUser = { id: nanoid(), ...req.body };
     let cryptPass = cryptoJs.AES.encrypt(req.body.password, saltKey).toString();
     newUser.password = cryptPass;
 
@@ -132,7 +165,7 @@ app.post("/adduser", (req, res) => {
 app.post("/subscribe", (req, res) => {
 
     console.log(req.body.id);
-    req.app.locals.db.collection("users").updateOne({ "id": req.body.id }, [{$set:{subscribed:{$eq:[false,"$subscribed"]}}}])
+    req.app.locals.db.collection("users").updateOne({ "id": req.body.id }, [{ $set: { subscribed: { $eq: [false, "$subscribed"] } } }])
         .then(results => {
             console.log(results);
             res.send("uppdatering av subscribed - ok from server")
