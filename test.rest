@@ -2,16 +2,6 @@ GET  http://localhost:4000/
 
 ###
 
-POST http://localhost:4000/addtest
-Content-Type: application/json
-
-{
-    "name": "kalle",
-    "password": "anka"
-}
-
-###
-
 GET  http://localhost:4000/allusers
 
 ###
@@ -20,8 +10,17 @@ POST http://localhost:4000/adduser
 Content-Type: application/json
 
 {
-    "name": "arammasis",
-    "password": "shabandari"
+    "name": "kalleanka",
+    "password": "kalleanka"
+}
+
+###
+
+POST http://localhost:4000/subscribe
+Content-Type: application/json
+
+{
+    "id": "UJJtzB_q142TnSiWDLFLI"
 }
 
 ###

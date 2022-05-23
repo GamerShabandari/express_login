@@ -92,7 +92,7 @@ app.get("/allusers", (req, res) => {
 // lägg till ny användare
 app.post("/adduser", (req, res) => {
 
-    let newUser = { id: nanoid(), ...req.body };
+    let newUser = { id: nanoid(), ...req.body, subscribed: false };
     let cryptPass = cryptoJs.AES.encrypt(req.body.password, saltKey).toString();
     newUser.password = cryptPass;
 
@@ -127,6 +127,21 @@ app.post("/adduser", (req, res) => {
 
 ////////////////////////////////////////////////////////////////////
 
+// ändra subscribe på en  användare
+
+app.post("/subscribe", (req, res) => {
+
+    console.log(req.body.id);
+    req.app.locals.db.collection("users").updateOne({ "id": req.body.id }, [{$set:{subscribed:{$eq:[false,"$subscribed"]}}}])
+        .then(results => {
+            console.log(results);
+            res.send("uppdatering av subscribed - ok from server")
+
+        })
+})
+
+////////////////////////////////////////////////////////////////////
+
 //logga in på sidan //
 app.post("/login", (req, res) => {
 
@@ -146,7 +161,7 @@ app.post("/login", (req, res) => {
                 if (user.name == req.body.name && deCryptPassToCheck == req.body.password) {
 
                     console.log("logged in" + user.name);
-                    status = { loggedIn: true, userID: user.id }
+                    status = { loggedIn: true, userID: user.id, subscribed: user.subscribed }
                 }
             }
             res.send(status)
