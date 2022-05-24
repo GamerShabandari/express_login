@@ -50,18 +50,23 @@ app.post("/admin", (req, res) => {
 
                 let usersListHTML = "<header><h1>Welcome Admin</h1></header><div><h3>Users and their subscription status</h3><ul>";
 
+                let subscribersListHTML = "<div><h2>All subscribers emails</h2><ul>"
+
                 for (const user of users) {
 
                     usersListHTML += "<li><strong>" + user.name + "</strong>: "
                     if (user.subscribed) {
                         usersListHTML += "subscribed</li><br>"
+                        subscribersListHTML += "<li><strong>" + user.email + "</strong></li>"
                     } else {
                         usersListHTML += "not subscribed</li><br>"
                     }
 
                 }
 
-                usersListHTML += "</ul> </div>"
+                subscribersListHTML += "</ul> </div>";
+                usersListHTML += "</ul> </div>";
+                usersListHTML += subscribersListHTML;
 
                 res.send(usersListHTML)
             })
