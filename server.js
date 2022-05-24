@@ -5,10 +5,17 @@ import morgan from "morgan";
 import cryptoJs from "crypto-js";
 import { MongoClient } from "mongodb";
 import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+dotenv.config()
 
 const app = express()
 
-MongoClient.connect("mongodb+srv://gamer:remag@gamerblogcluster.bwgq0.mongodb.net/?retryWrites=true&w=majority", {
+const mongoUrl = process.env.MONGOURL;
+const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
+
+//console.log(process.env.MONGOURL);
+
+MongoClient.connect(mongoUrl, {
     useUnifiedTopology: true
 })
     .then(client => {
@@ -21,11 +28,6 @@ app.use(morgan("dev"))
 app.use(express.json())
 app.use(cors())
 app.use(bodyParser.urlencoded())
-
-
-
-
-const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
 
 
 ////////////////////////////////////////////////////////////////////
