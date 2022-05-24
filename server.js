@@ -32,7 +32,7 @@ const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
 
 // login admin monolit
 app.get("/login", (req, res) => {
-    let formHtml = "<form action='/admin' method='post'> <input type='text' name='username' placeholder='username'> <input type='text' name='password' placeholder='password'> <button>login</button></form>"
+    let formHtml = "<form action='/admin' method='post'> <input type='text' name='username' placeholder='username'> <input type='password' name='password' placeholder='password'> <button>login</button></form>"
     res.send(formHtml)
 })
 
