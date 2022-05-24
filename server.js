@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import cryptoJs from "crypto-js";
 import { MongoClient } from "mongodb";
+import bodyParser from 'body-parser';
 
 const app = express()
 
@@ -19,6 +20,9 @@ MongoClient.connect("mongodb+srv://gamer:remag@gamerblogcluster.bwgq0.mongodb.ne
 app.use(morgan("dev"))
 app.use(express.json())
 app.use(cors())
+app.use(bodyParser.urlencoded())
+
+
 
 
 const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
@@ -35,38 +39,36 @@ app.get("/login", (req, res) => {
 
 // visa admin gränssnitt monolit
 app.post("/admin", (req, res) => {
-    res.send(req.body)
-    console.log(req.body);
 
-    // if (req.body.username == "admin" && req.body.password == "admin") {
+    if (req.body.username == "admin" && req.body.password == "admin") {
 
-    //     res.send("hejhej");
-    //     // req.app.locals.db.collection("users").find().toArray()
-    //     //     .then(results => {
 
-    //     //         let users = results;
+        req.app.locals.db.collection("users").find().toArray()
+            .then(results => {
 
-    //     //         let usersListHTML = "<div> <ul>";
+                let users = results;
 
-    //     //         for (const user of users) {
+                let usersListHTML = "<header><h1>Welcome Admin</h1></header><div><h3>Users and their subscription status</h3><ul>";
 
-    //     //             usersListHTML += "<li>" + user.name + ": "
-    //     //             if (user.subscribed) {
-    //     //                 usersListHTML += "subscribed</li>"
-    //     //             } else {
-    //     //                 usersListHTML += "not subscribed</li>"
-    //     //             }
+                for (const user of users) {
 
-    //     //         }
+                    usersListHTML += "<li><strong>" + user.name + "</strong>: "
+                    if (user.subscribed) {
+                        usersListHTML += "subscribed</li><br>"
+                    } else {
+                        usersListHTML += "not subscribed</li><br>"
+                    }
 
-    //     //         usersListHTML += "</ul> </div>"
+                }
 
-    //     //         res.send(usersListHTML)
-    //     //     })
-    // } else {
-    //     res.send(req.body);
-    //     // res.send("Access denied")
-    // }
+                usersListHTML += "</ul> </div>"
+
+                res.send(usersListHTML)
+            })
+    } else {
+        //  res.send(req.body);
+        res.send("Access denied")
+    }
 
 })
 
@@ -96,21 +98,51 @@ app.get("/allusers", (req, res) => {
 // lägg till ny användare
 app.post("/adduser", (req, res) => {
 
-    let newUser = { id: nanoid(), ...req.body };
-    let cryptPass = cryptoJs.AES.encrypt(req.body.password, saltKey).toString();
-    newUser.password = cryptPass;
+    req.app.locals.db.collection("users").find({ "name": req.body.name }).toArray()
+        .then(results => {
+            console.log(results);
 
-    req.app.locals.db.collection("users").insertOne(newUser)
-        .then(result => {
-            console.log(result);
-            res.send("ny användare skapad")
+            if (results.length > 0) {
+                res.send("användarnamnet finns redan, välj något annat")
+            }
+            else {
+                let newUser = { id: nanoid(), ...req.body };
+                let cryptPass = cryptoJs.AES.encrypt(req.body.password, saltKey).toString();
+                newUser.password = cryptPass;
+
+                req.app.locals.db.collection("users").insertOne(newUser)
+                    .then(result => {
+                        console.log(result);
+                        res.send("ny användare skapad")
+                    })
+
+            }
+
         })
 })
 
 ////////////////////////////////////////////////////////////////////
 
-// ändra subscribe på en  användare
+// radera en användare och dess bloggar
+app.delete("/deleteuser/:userId", (req, res) => {
 
+    req.app.locals.db.collection("users").deleteOne({ "id": req.params.userId })
+        .then(results => {
+            console.log(results);
+
+            req.app.locals.db.collection("blogs").deleteMany({ "author": req.params.userId })
+                .then(results => {
+                    console.log(results);
+                    res.send("användaren och alla dess bloggar raderade")
+                })
+        })
+
+
+})
+
+////////////////////////////////////////////////////////////////////
+
+// ändra subscribe på en  användare
 app.post("/subscribe", (req, res) => {
 
     console.log(req.body.id);

@@ -20,9 +20,9 @@ POST http://localhost:4000/adduser
 Content-Type: application/json
 
 {
-    "name": "arnold",
-    "password": "arnold",
-    "subscribed": true
+    "name": "sistatest",
+    "password": "sistatest",
+    "subscribed": false
 }
 
 ###
@@ -40,8 +40,8 @@ POST http://localhost:4000/login
 Content-Type: application/json
 
 {
-    "name": "arammasis",
-    "password": "shabandari"
+    "name": "kalleanka",
+    "password": "kalleanka"
 }
 
 ###
@@ -49,10 +49,13 @@ POST http://localhost:4000/blogs
 Content-Type: application/json
 
 {
-    "title": "aram här",
-    "text": "aram testar",
-    "author": "b24_dlDk_6wyHC-9qHhXl"
+    "title": "nytt igen",
+    "text": "nytt igen",
+    "author": "gKgkRScUC0obiAwzm0zhm"
 }
+
+###
+DELETE  http://localhost:4000/deleteuser/gKgkRScUC0obiAwzm0zhm
 
 ###
 GET http://localhost:4000/blogs/b24_dlDk_6wyHC-9qHhXl
