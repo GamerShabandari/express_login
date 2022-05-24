@@ -1,24 +1,17 @@
 import express from "express";
-import fs from "fs";
 import { nanoid } from "nanoid";
 import cors from "cors";
 import morgan from "morgan";
 import cryptoJs from "crypto-js";
 import { MongoClient } from "mongodb";
 
-// const port = 3000;
 const app = express()
 
-// MongoClient.connect("mongodb://127.0.0.1:27017", {
-//     useUnifiedTopology: true
-// })
 MongoClient.connect("mongodb+srv://gamer:remag@gamerblogcluster.bwgq0.mongodb.net/?retryWrites=true&w=majority", {
     useUnifiedTopology: true
 })
     .then(client => {
         console.log("vi har kontakt med databasen");
-
-        // const db = client.db("nosqldagbok");
         const db = client.db("blogosphere");
         app.locals.db = db;
     })
@@ -33,54 +26,47 @@ const saltKey = "FanVadSäkertDetHärLösenOrderÄrEllerHur!?!?";
 
 ////////////////////////////////////////////////////////////////////
 
-/// testar mongoDB med denna
-// app.get("/", (req, res, next)=>{
-
-//   
-
-//     req.app.locals.db.collection("users").find().toArray()
-//     .then(results =>{
-//         console.log(results);
-//     })
-
-// })
-
-// app.post("/addtest", (req, res)=>{
-//     req.app.locals.db.collection("users").insertOne(req.body)
-//     .then(result =>{
-//         console.log(result);
-//     })
-// })
-
-////////////////////////////////////////////////////////////////////
+// login admin monolit
+app.get("/login", (req, res) => {
+    let formHtml = "<form action='/admin' method='post'> <input type='text' name='username' placeholder='username'> <input type='text' name='password' placeholder='password'> <button>login</button></form>"
+    res.send(formHtml)
+})
 
 
-// logga in admin monolit
-app.get("/admin", (req, res) => {
+// visa admin gränssnitt monolit
+app.post("/admin", (req, res) => {
+    res.send(req.body)
+    console.log(req.body);
 
-    req.app.locals.db.collection("users").find().toArray()
-        .then(results => {
-    
-            let users = results;
+    // if (req.body.username == "admin" && req.body.password == "admin") {
 
-            let usersListHTML = "<div> <ul>";
+    //     res.send("hejhej");
+    //     // req.app.locals.db.collection("users").find().toArray()
+    //     //     .then(results => {
 
-            for (const user of users) {
+    //     //         let users = results;
 
-                usersListHTML += "<li>" + user.name + ": "
-                if (user.subscribed) {
-                    usersListHTML += "subscribed</li>"
-                } else{
-                    usersListHTML += "not subscribed</li>"
-                }
+    //     //         let usersListHTML = "<div> <ul>";
 
-            }
+    //     //         for (const user of users) {
 
-            usersListHTML += "</ul> </div>"
+    //     //             usersListHTML += "<li>" + user.name + ": "
+    //     //             if (user.subscribed) {
+    //     //                 usersListHTML += "subscribed</li>"
+    //     //             } else {
+    //     //                 usersListHTML += "not subscribed</li>"
+    //     //             }
 
-            res.send(usersListHTML)
-        })
+    //     //         }
 
+    //     //         usersListHTML += "</ul> </div>"
+
+    //     //         res.send(usersListHTML)
+    //     //     })
+    // } else {
+    //     res.send(req.body);
+    //     // res.send("Access denied")
+    // }
 
 })
 
@@ -94,7 +80,6 @@ app.get("/allusers", (req, res) => {
         .then(results => {
             console.log(results);
 
-            //let users = JSON.parse(results);
             let users = results
 
             let allUsersInfo = users.map((user) => {
@@ -104,20 +89,6 @@ app.get("/allusers", (req, res) => {
             res.send(allUsersInfo)
 
         })
-
-    // fs.readFile("users.json", (err, data) => {
-    //     if (err) {
-    //         console.log("något gick fel när användarna skulle läsas in " + err);
-    //     }
-
-    //     let users = JSON.parse(data);
-    //     let allUsersInfo = users.map((user) => {
-    //         let u = { id: user.id, name: user.name }
-    //         return u;
-    //     })
-    //     res.send(allUsersInfo)
-
-    // })
 })
 
 ////////////////////////////////////////////////////////////////////
@@ -134,28 +105,6 @@ app.post("/adduser", (req, res) => {
             console.log(result);
             res.send("ny användare skapad")
         })
-
-    // fs.readFile("users.json", (err, data) => {
-    //     if (err) {
-    //         console.log("något gick snett: " + err);
-    //     }
-
-    //     let users = JSON.parse(data);
-
-    //     let newUser = { id: nanoid(), ...req.body };
-
-    //     let cryptPass = cryptoJs.AES.encrypt(req.body.password, saltKey).toString();
-    //     newUser.password = cryptPass;
-
-    //     users.push(newUser);
-
-    //     fs.writeFile("users.json", JSON.stringify(users, null, 2), (err) => {
-    //         if (err) {
-    //             console.log("något gick fel när användare skulle skapas " + err);
-    //         }
-    //     })
-    // })
-    // res.send("ny användare skapad")
 })
 
 ////////////////////////////////////////////////////////////////////
@@ -186,8 +135,6 @@ app.post("/login", (req, res) => {
             let users = results;
             let status = { loggedIn: false, userID: "" };
 
-            //    console.log(req.body);
-
             for (let i = 0; i < users.length; i++) {
                 const user = users[i];
                 let deCryptPassToCheck = cryptoJs.AES.decrypt(user.password, saltKey).toString(cryptoJs.enc.Utf8);
@@ -199,28 +146,6 @@ app.post("/login", (req, res) => {
             }
             res.send(status)
         })
-
-    // fs.readFile("users.json", (err, data) => {
-    //     if (err) {
-    //         console.log("något gick fel med login" + err);
-    //     }
-
-    //     let users = JSON.parse(data)
-    //     let status = { loggedIn: false, userID: "" };
-
-    //     console.log(req.body);
-
-    //     for (let i = 0; i < users.length; i++) {
-    //         const user = users[i];
-    //         let deCryptPassToCheck = cryptoJs.AES.decrypt(user.password, saltKey).toString(cryptoJs.enc.Utf8);
-    //         if (user.name == req.body.name && deCryptPassToCheck == req.body.password) {
-
-    //             console.log("logged in" + user.name);
-    //             status = { loggedIn: true, userID: user.id }
-    //         }
-    //     }
-    //     res.send(status)
-    // })
 })
 
 ////////////////////////////////////////////////////////////////////
@@ -235,26 +160,6 @@ app.post("/blogs", (req, res) => {
             console.log(result);
             res.send("skapa inlägg - ok from server")
         })
-
-    // fs.readFile("blogs.json", (err, data) => {
-    //     if (err) {
-    //         console.log("något gick snett när alla bloggarna skulle läsas in: " + err);
-    //     }
-
-    //     let blogs = JSON.parse(data);
-
-    //     let newBlogEntry = { id: nanoid(), ...req.body, created: new Date().toDateString() }
-
-    //     blogs.push(newBlogEntry);
-
-    //     fs.writeFile("blogs.json", JSON.stringify(blogs, null, 2), (err) => {
-    //         if (err) {
-    //             console.log("något gick fel när ny blogg skulle skapas " + err);
-    //         }
-    //         res.send("ok from server")
-    //     })
-    // })
-
 })
 
 ////////////////////////////////////////////////////////////////////
@@ -268,29 +173,6 @@ app.delete("/blogs/:blogID", (req, res) => {
             res.send("radering av inlägg - ok from server")
 
         })
-
-    // fs.readFile("blogs.json", (err, data) => {
-    //     if (err) {
-    //         console.log("något gick fel när bloggar skulle läsas in " + err);
-    //     }
-
-    //     let allBlogs = JSON.parse(data);
-
-    //     for (let i = 0; i < allBlogs.length; i++) {
-    //         const blog = allBlogs[i];
-
-    //         if (blog.id == req.params.blogID) {
-    //             allBlogs.splice(i, 1);
-    //             fs.writeFile("blogs.json", JSON.stringify(allBlogs, null, 2), (err) => {
-    //                 if (err) {
-    //                     console.log("något gick fel när ny blogg skulle skapas " + err);
-    //                 }
-    //                 res.send("ok from server")
-    //             })
-
-    //         }
-    //     }
-    // })
 
 })
 
@@ -307,31 +189,6 @@ app.put("/blogs/update", (req, res) => {
             res.send("uppdatering av inlägg - ok from server")
 
         })
-
-    // fs.readFile("blogs.json", (err, data) => {
-    //     if (err) {
-    //         console.log("något gick fel när bloggar skulle läsas in " + err);
-    //     }
-
-    //     let allBlogs = JSON.parse(data);
-
-    //     for (let i = 0; i < allBlogs.length; i++) {
-    //         const blog = allBlogs[i];
-
-    //         if (blog.id == updatedBlogPost.id) {
-
-    //             allBlogs[i] = updatedBlogPost;
-
-    //             fs.writeFile("blogs.json", JSON.stringify(allBlogs, null, 2), (err) => {
-    //                 if (err) {
-    //                     console.log("något gick fel när ny blogg skulle skapas " + err);
-    //                 }
-    //                 res.send("ok from server")
-    //             })
-
-    //         }
-    //     }
-    // })
 
 })
 
@@ -351,28 +208,6 @@ app.get("/blogs/:userID", (req, res) => {
             res.send(yourBlogs.reverse())
 
         })
-
-    // fs.readFile("blogs.json", (err, data) => {
-    //     if (err) {
-    //         console.log("något gick fel när bloggar skulle läsas in " + err);
-    //     }
-
-    //     let allBlogs = JSON.parse(data);
-
-    //     let yourBlogs = [];
-
-    //     for (let i = 0; i < allBlogs.length; i++) {
-    //         const blog = allBlogs[i];
-
-    //         if (blog.author == req.params.userID) {
-    //             yourBlogs.push(blog)
-    //         }
-
-    //     }
-
-    //     res.send(yourBlogs.reverse())
-
-    // })
 })
 
 ////////////////////////////////////////////////////////////////////
