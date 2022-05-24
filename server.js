@@ -50,16 +50,16 @@ app.post("/admin", (req, res) => {
 
                 let users = results;
 
-                let usersListHTML = "<header><h1>Welcome Admin</h1></header><div><h3>Users and their subscription status</h3><ul>";
+                let usersListHTML = "<head><title>blogospehere admin</title></head><header><h1>Welcome Admin</h1></header><div><h3>Users and their subscription status</h3><ul>";
 
-                let subscribersListHTML = "<div><h2>All subscribers emails</h2><ul>"
+                let subscribersListHTML = "<div><h2>All subscribers emails</h2><ul style='list-style-type: none;'>"
 
                 for (const user of users) {
 
                     usersListHTML += "<li><strong>" + user.name + "</strong>: "
                     if (user.subscribed) {
                         usersListHTML += "subscribed</li><br>"
-                        subscribersListHTML += "<li><strong>" + user.email + "</strong></li>"
+                        subscribersListHTML += "<li><strong>" + user.email + ", </strong></li>"
                     } else {
                         usersListHTML += "not subscribed</li><br>"
                     }
