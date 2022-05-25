@@ -15,4 +15,5 @@ NPM packages used:
 - morgan
 - nanoid
 
-type nodemon start to run server on localhost 4000
+first type "npm i" in console to install all dependencies 
+then type "node server.js" to run server on localhost 4000
